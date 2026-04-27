@@ -7,6 +7,9 @@
     - [Servicios externos](#servicios-externos)
 - [Diseño de base de datos](#diseño-de-base-de-datos)
 - [Arquitectura seleccionada](#arquitectura-seleccionada)
+- [Estructura del proyecto](#estructura-del-proyecto)
+- [Manual de uso](#manual-de-uso)
+- [Estrategia de ramas](#estrategia-de-ramas)
 - [Plan de trabajo](#plan-de-trabajo)
 
 ## Descripcion
@@ -93,6 +96,142 @@ flowchart TD
     BL --> DB
 ```
 
+## Estructura del proyecto
+
+El proyecto sigue una estructura de directorios modular:
+
+```text
+SafeClass-API/
+├── config/
+│   ├── db_connection.py   # Conexión a la base de datos
+│   └── settings.py        # Configuración de la aplicación
+├── controllers/
+│   ├── auth_controller.py   # Controlador de autenticación
+│   ├── municipality_controller.py # Controlador de municipios
+│   └── suspension_controller.py # Controlador de suspensiones
+├── middlewares/
+│   ├── jwt_middleware.py    # Middleware de JWT
+│   └── rate_limit_middleware.py # Middleware de limitación de tasa
+├── models/
+│   ├── database.py          # Modelo de base de datos
+│   ├── municipality.py      # Modelo de municipio
+│   └── suspension.py        # Modelo de suspensión
+├── routes/
+│   ├── auth_routes.py       # Rutas de autenticación
+│   ├── municipality_routes.py # Rutas de municipios
+│   └── suspension_routes.py # Rutas de suspensiones
+├── services/
+│   ├── openweathermap_service.py # Servicio de OpenWeatherMap
+│   └── token_service.py         # Servicio de tokens
+├── utils/
+│   ├── weather_utils.py         # Utilidades de clima
+│   ├── password_utils.py        # Utilidades de contraseña
+│   └── token_utils.py           # Utilidades de tokens
+├── main.py                      # Punto de entrada de la API
+└── README.md
+```
+
+## Manual de uso
+
+```bash
+# Crear entorno virtual
+python -m venv venv
+
+# Activar entorno virtual
+venv\Scripts\activate
+
+# Instalar dependencias
+uv pip install -r requirements.txt
+```
+
+### Ejecución
+
+```bash
+cd SafeClass-API
+python -m venv venv
+venv\Scripts\activate
+uvicorn main:app --reload
+```
+
+## Estrategia de ramas
+
+El proyecto utiliza una estrategia de ramas basada en **Git Flow simplificado**, con tres niveles:
+
+| Rama | Propósito |
+| :--- | :-------- |
+| `main` | Rama de producción / despliegue. Solo recibe merges desde `develop` cuando el código está estable y probado. |
+| `develop` | Rama de integración. Todas las ramas de funcionalidad hacen merge aquí antes de llegar a `main`. |
+| `feature/fun_##` | Una rama por cada funcionalidad listada en el plan de trabajo. Se crean desde `develop` y se fusionan de vuelta a `develop`. |
+
+```mermaid
+gitGraph
+   commit id: "init"
+   branch develop
+   checkout develop
+
+   branch feature/fun_01
+   checkout feature/fun_01
+   commit id: "fun_01: signup"
+   checkout develop
+   merge feature/fun_01
+
+   branch feature/fun_03
+   checkout feature/fun_03
+   commit id: "fun_03: login"
+   checkout develop
+   merge feature/fun_03
+
+   branch feature/fun_07
+   checkout feature/fun_07
+   commit id: "fun_07: weather"
+   checkout develop
+   merge feature/fun_07
+
+   checkout main
+   merge develop id: "release v1.0"
+```
+
+### Flujo de trabajo
+
+```bash
+# 1. Crear rama de funcionalidad desde develop
+git checkout develop
+git pull origin develop
+git checkout -b feature/fun_01
+
+# 2. Trabajar y hacer commits
+git add .
+git commit -m "fun_01: implementar endpoint POST /auth/signup"
+
+# 3. Hacer merge hacia develop (via Pull Request en GitHub)
+git push origin feature/fun_01
+
+# 4. Cuando develop está estable, merge a main para despliegue
+# (solo el Techlead hace merge a main)
+```
+
+---
+
 ## Plan de trabajo
 
-> Aun en desarrollo
+Listado de funcionalidades a implementar. Cada `fun_##` corresponde a una rama `feature/fun_##`.
+
+| ID | Archivo(s) a modificar | Función / Tarea | Responsable | Fecha |
+| :-: | :--------------------- | :-------------- | :---------: | :---: |
+| fun_01 | `routes/auth_routes.py` · `controllers/auth_controller.py` · `models/database.py` | Endpoint **POST /auth/signup** — Registro de académico | | |
+| fun_02 | `controllers/auth_controller.py` · `utils/password_utils.py` | Validación de correo duplicado y hash de contraseña en signup | | |
+| fun_03 | `routes/auth_routes.py` · `controllers/auth_controller.py` · `services/token_service.py` | Endpoint **POST /auth/login** — Autenticación y generación de JWT | | |
+| fun_04 | `middlewares/jwt_middleware.py` · `utils/token_utils.py` | Middleware de protección de rutas con JWT | | |
+| fun_05 | `routes/municipality_routes.py` · `controllers/municipality_controller.py` · `models/municipality.py` | Endpoint **POST /municipios** — Listar todos los municipios | | |
+| fun_06 | `routes/municipality_routes.py` · `controllers/municipality_controller.py` | Endpoint **GET /municipios/{id}** — Obtener municipio por ID | | |
+| fun_07 | `routes/auth_routes.py` · `services/openweathermap_service.py` · `config/settings.py` | Endpoint **GET /weather** — Clima actual del municipio del usuario | | |
+| fun_08 | `services/openweathermap_service.py` · `utils/weather_utils.py` | Endpoint **GET /weather/{fecha}** — Pronóstico por fecha (máx. 5 días) | | |
+| fun_09 | `routes/suspension_routes.py` · `controllers/suspension_controller.py` · `models/suspension.py` | Endpoint **POST /suspensions** — Registrar suspensión | | |
+| fun_10 | `routes/suspension_routes.py` · `controllers/suspension_controller.py` | Endpoints **GET /suspensions** y **GET /suspensions/{fecha}** | | |
+| fun_11 | `utils/weather_utils.py` | Lógica de recomendación automática de suspensión según condiciones climáticas | | |
+| fun_12 | `middlewares/rate_limit_middleware.py` | Middleware de limitación de tasa (rate limiting) | | |
+| fun_13 | `config/db_connection.py` · `config/settings.py` | Configuración de conexión a MySQL con variables de entorno | | |
+| fun_14 | `tests/test_auth.py` | Pruebas unitarias de autenticación (fun_01 – fun_04) | | |
+| fun_15 | `tests/test_municipalities.py` | Pruebas unitarias de municipios (fun_05 – fun_06) | | |
+| fun_16 | `tests/test_weather.py` | Pruebas unitarias del servicio de clima (fun_07 – fun_08) | | |
+| fun_17 | `tests/test_suspensions.py` | Pruebas unitarias de suspensiones (fun_09 – fun_10) | | |
