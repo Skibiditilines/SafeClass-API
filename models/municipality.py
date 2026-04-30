@@ -1,10 +1,16 @@
 """
 Definición del modelo de la tabla MUNICIPIO.
 """
-# TODO: Definir el modelo del municipio con el ORM o esquema seleccionado
+from pydantic import BaseModel
 
-# Ejemplo de campos según el diseño de la BD:
-# id_municipio (PK, int)
-# nombre (string)
-# lat (string)
-# lon (string)
+class MunicipioBase(BaseModel):
+    nombre: str
+    lat: str
+    lon: str
+
+# Para respuestas de la API
+class MunicipioResponse(MunicipioBase):
+    id_municipio: int
+
+    class Config:
+        from_attributes = True

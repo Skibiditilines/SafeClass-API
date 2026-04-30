@@ -1,9 +1,20 @@
 """
 Definición del modelo de la tabla SUSPENSION.
 """
-# TODO: Definir el modelo de la suspensión con el ORM o esquema seleccionado
+from pydantic import BaseModel
+from datetime import date
 
-# Ejemplo de campos según el diseño de la BD:
-# id_suspension (PK, int)
-# fecha (date)
-# id_academico (FK -> ACADEMICO)
+class SuspensionBase(BaseModel):
+    fecha: date
+
+# Para crear una nueva suspensión (POST /suspensions)
+class SuspensionCreate(SuspensionBase):
+    id_academico: int
+
+# Para listar el historial (GET /suspensions)
+class SuspensionResponse(SuspensionBase):
+    id_suspension: int
+    id_academico: int
+
+    class Config:
+        from_attributes = True

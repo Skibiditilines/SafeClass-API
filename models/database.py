@@ -1,12 +1,16 @@
-"""
-Definición del modelo de la tabla ACADEMICO.
-"""
-# TODO: Definir el modelo del académico con el ORM o esquema seleccionado
+from pydantic import BaseModel, EmailStr
 
-# Ejemplo de campos según el diseño de la BD:
-# id_academico (PK, int)
-# nombre (string)
-# institucion (string)
-# correo (string)
-# contrasena (string)
-# id_municipio (FK -> MUNICIPIO)
+class AcademicoBase(BaseModel):
+    nombre: str
+    institucion: str
+    correo: EmailStr
+    id_municipio: int
+
+class AcademicoCreate(AcademicoBase):
+    contrasena: str
+
+class AcademicoResponse(AcademicoBase):
+    id_academico: int
+
+    class Config:
+        from_attributes = True
