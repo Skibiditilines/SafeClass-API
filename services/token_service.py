@@ -1,14 +1,24 @@
 """
 Servicio de generación y validación de tokens JWT.
 """
-# TODO: Implementar creación y validación de tokens JWT
+import jwt 
+from datetime import datetime, timedelta, timezone
+from config.settings import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 
 
 def create_access_token(data: dict) -> str:
-    """Genera un token JWT con los datos del académico."""
-    pass
+    to_encode = data.copy()
+    now = datetime.now(timezone.utc)
+    expire = now + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    to_encode.update({"exp": expire})
+    
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
 
 
 def verify_token(token: str) -> dict:
-    """Verifica y decodifica un token JWT. Retorna el payload."""
-    pass
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        return payload
+    except jwt.PyJWTError:
+        raise ValueError("Token inválido")

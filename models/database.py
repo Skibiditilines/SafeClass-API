@@ -14,3 +14,11 @@ class AcademicoResponse(AcademicoBase):
 
     class Config:
         from_attributes = True
+
+class LoginRequest(BaseModel):
+    correo: EmailStr
+    contrasena: str
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
