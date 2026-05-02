@@ -1,10 +1,11 @@
 # SafeClass-API
 
 ## Indice
+
 - [Descripción](#descripcion)
 - [Integrantes](#integrantes)
 - [Tecnologías](#tecnologias)
-    - [Servicios externos](#servicios-externos)
+  - [Servicios externos](#servicios-externos)
 - [Diseño de base de datos](#diseño-de-base-de-datos)
 - [Arquitectura seleccionada](#arquitectura-seleccionada)
 - [Estructura del proyecto](#estructura-del-proyecto)
@@ -24,11 +25,11 @@ La API está diseñada para centralizar la información climática y facilitar l
 
 ## Integrantes
 
-| Nombre  | Rol  | Correo Electronico  |
-| :---- | :---- | :---- |
-| Erick Daniel Martinez Martinez | Techlead Desarrollador Backend | zS23021810@estudiantes.uv.mx |
-| Martinez Dominguez Elias | Control de Calidad Documentación | zs23017372@estudiantes.uv.mx |
-| Sarricolea Cortés Ethan Yahel | Desarrollador Backend Documentación | zs23017351@estudiantes.uv.mx |
+| Nombre                         | Rol                                 | Correo Electronico           |
+| :----------------------------- | :---------------------------------- | :--------------------------- |
+| Erick Daniel Martinez Martinez | Techlead Desarrollador Backend      | zS23021810@estudiantes.uv.mx |
+| Martinez Dominguez Elias       | Control de Calidad Documentación    | zs23017372@estudiantes.uv.mx |
+| Sarricolea Cortés Ethan Yahel  | Desarrollador Backend Documentación | zs23017351@estudiantes.uv.mx |
 
 ## Tecnologias
 
@@ -157,10 +158,10 @@ uvicorn main:app --reload
 
 El proyecto utiliza una estrategia de ramas basada en **Git Flow simplificado**, con tres niveles:
 
-| Rama | Propósito |
-| :--- | :-------- |
-| `main` | Rama de producción / despliegue. Solo recibe merges desde `develop` cuando el código está estable y probado. |
-| `develop` | Rama de integración. Todas las ramas de funcionalidad hacen merge aquí antes de llegar a `main`. |
+| Rama             | Propósito                                                                                                                    |
+| :--------------- | :--------------------------------------------------------------------------------------------------------------------------- |
+| `main`           | Rama de producción / despliegue. Solo recibe merges desde `develop` cuando el código está estable y probado.                 |
+| `develop`        | Rama de integración. Todas las ramas de funcionalidad hacen merge aquí antes de llegar a `main`.                             |
 | `feature/fun_##` | Una rama por cada funcionalidad listada en el plan de trabajo. Se crean desde `develop` y se fusionan de vuelta a `develop`. |
 
 ```mermaid
@@ -216,22 +217,22 @@ git push origin feature/fun_01
 
 Listado de funcionalidades a implementar. Cada `fun_##` corresponde a una rama `feature/fun_##`.
 
-| ID | Archivo(s) a modificar | Función / Tarea | Responsable | Fecha |
-| :-: | :--------------------- | :-------------- | :---------: | :---: |
-| fun_01 | `routes/auth_routes.py` · `controllers/auth_controller.py` · `models/database.py` | Endpoint **POST /auth/signup** — Registro de académico | | |
-| fun_02 | `controllers/auth_controller.py` · `utils/password_utils.py` | Validación de correo duplicado y hash de contraseña en signup | | |
-| fun_03 | `routes/auth_routes.py` · `controllers/auth_controller.py` · `services/token_service.py` | Endpoint **POST /auth/login** — Autenticación y generación de JWT | | |
-| fun_04 | `middlewares/jwt_middleware.py` · `utils/token_utils.py` | Middleware de protección de rutas con JWT | | |
-| fun_05 | `routes/municipality_routes.py` · `controllers/municipality_controller.py` · `models/municipality.py` | Endpoint **POST /municipios** — Listar todos los municipios | | |
-| fun_06 | `routes/municipality_routes.py` · `controllers/municipality_controller.py` | Endpoint **GET /municipios/{id}** — Obtener municipio por ID | | |
-| fun_07 | `routes/auth_routes.py` · `services/openweathermap_service.py` · `config/settings.py` | Endpoint **GET /weather** — Clima actual del municipio del usuario | | |
-| fun_08 | `services/openweathermap_service.py` · `utils/weather_utils.py` | Endpoint **GET /weather/{fecha}** — Pronóstico por fecha (máx. 5 días) | | |
-| fun_09 | `routes/suspension_routes.py` · `controllers/suspension_controller.py` · `models/suspension.py` | Endpoint **POST /suspensions** — Registrar suspensión | | |
-| fun_10 | `routes/suspension_routes.py` · `controllers/suspension_controller.py` | Endpoints **GET /suspensions** y **GET /suspensions/{fecha}** | | |
-| fun_11 | `utils/weather_utils.py` | Lógica de recomendación automática de suspensión según condiciones climáticas | | |
-| fun_12 | `middlewares/rate_limit_middleware.py` | Middleware de limitación de tasa (rate limiting) | | |
-| fun_13 | `config/db_connection.py` · `config/settings.py` | Configuración de conexión a MySQL con variables de entorno | | |
-| fun_14 | `tests/test_auth.py` | Pruebas unitarias de autenticación (fun_01 – fun_04) | | |
-| fun_15 | `tests/test_municipalities.py` | Pruebas unitarias de municipios (fun_05 – fun_06) | | |
-| fun_16 | `tests/test_weather.py` | Pruebas unitarias del servicio de clima (fun_07 – fun_08) | | |
-| fun_17 | `tests/test_suspensions.py` | Pruebas unitarias de suspensiones (fun_09 – fun_10) | | |
+|   ID   | Archivo(s) a modificar                                                                                | Función / Tarea                                                               | Responsable  |   Fecha    |
+| :----: | :---------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------- | :----------: | :--------: |
+| fun_01 | `routes/auth_routes.py` · `controllers/auth_controller.py` · `models/database.py`                     | Endpoint **POST /auth/signup** — Registro de académico                        | Erick Daniel | 29/04/2026 |
+| fun_02 | `controllers/auth_controller.py` · `utils/password_utils.py`                                          | Validación de correo duplicado y hash de contraseña en signup                 |              |            |
+| fun_03 | `routes/auth_routes.py` · `controllers/auth_controller.py` · `services/token_service.py`              | Endpoint **POST /auth/login** — Autenticación y generación de JWT             |              |            |
+| fun_04 | `middlewares/jwt_middleware.py` · `utils/token_utils.py`                                              | Middleware de protección de rutas con JWT                                     |              |            |
+| fun_05 | `routes/municipality_routes.py` · `controllers/municipality_controller.py` · `models/municipality.py` | Endpoint **POST /municipios** — Listar todos los municipios                   |              |            |
+| fun_06 | `routes/municipality_routes.py` · `controllers/municipality_controller.py`                            | Endpoint **GET /municipios/{id}** — Obtener municipio por ID                  |              |            |
+| fun_07 | `routes/auth_routes.py` · `services/openweathermap_service.py` · `config/settings.py`                 | Endpoint **GET /weather** — Clima actual del municipio del usuario            |              |            |
+| fun_08 | `services/openweathermap_service.py` · `utils/weather_utils.py`                                       | Endpoint **GET /weather/{fecha}** — Pronóstico por fecha (máx. 5 días)        |              |            |
+| fun_09 | `routes/suspension_routes.py` · `controllers/suspension_controller.py` · `models/suspension.py`       | Endpoint **POST /suspensions** — Registrar suspensión                         |              |            |
+| fun_10 | `routes/suspension_routes.py` · `controllers/suspension_controller.py`                                | Endpoints **GET /suspensions** y **GET /suspensions/{fecha}**                 |              |            |
+| fun_11 | `utils/weather_utils.py`                                                                              | Lógica de recomendación automática de suspensión según condiciones climáticas |              |            |
+| fun_12 | `middlewares/rate_limit_middleware.py`                                                                | Middleware de limitación de tasa (rate limiting)                              |              |            |
+| fun_13 | `config/db_connection.py` · `config/settings.py`                                                      | Configuración de conexión a MySQL con variables de entorno                    |              |            |
+| fun_14 | `tests/test_auth.py`                                                                                  | Pruebas unitarias de autenticación (fun_01 – fun_04)                          |              |            |
+| fun_15 | `tests/test_municipalities.py`                                                                        | Pruebas unitarias de municipios (fun_05 – fun_06)                             |              |            |
+| fun_16 | `tests/test_weather.py`                                                                               | Pruebas unitarias del servicio de clima (fun_07 – fun_08)                     |              |            |
+| fun_17 | `tests/test_suspensions.py`                                                                           | Pruebas unitarias de suspensiones (fun_09 – fun_10)                           |              |            |
