@@ -5,7 +5,7 @@ POST /auth/login   - Login y generación de token JWT
 """
 from fastapi import APIRouter, Depends, status
 from config.db_connection import get_db_connection
-from models.database import AcademicoCreate, AcademicoResponse
+from models.database import AcademicoCreate, AcademicoResponse, LoginRequest, Token
 from controllers import auth_controller
 
 router = APIRouter()
@@ -36,9 +36,20 @@ router = APIRouter()
 def signup(academico: AcademicoCreate, db=Depends(get_db_connection)):
     return auth_controller.signup(db, academico)
 
-@router.post("/login")
-def login():
-    """Autenticar usuario y generar token de acceso."""
-    # TODO: Recibir body con correo, contrasena
-    # TODO: Llamar a auth_controller.login(...)
-    return {"message": "login endpoint - not implemented yet"}
+@router.post(
+    "/login",
+    response_model=Token,
+    status_code=status.HTTP_200_OK,
+    responses={
+        400: {
+            "description": "Error de validación (Ej. Credenciales incorrectas)",
+            "content": {
+                "application/json": {
+                    "example": {"detail": "Correo o contraseña incorrectos."}
+                }
+            }
+        }
+    } 
+)  
+def login(login_request: LoginRequest, db=Depends(get_db_connection)):
+    return auth_controller.login(db, login_request.correo, login_request.contrasena)

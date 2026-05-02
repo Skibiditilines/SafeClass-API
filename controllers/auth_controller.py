@@ -5,11 +5,9 @@ Maneja el registro y login de académicos.
 from fastapi import HTTPException, status
 import mysql.connector
 from models.database import AcademicoCreate, AcademicoResponse
-from utils.password_utils import hash_password
-
-import mysql.connector
+from services.token_service import create_access_token
+from utils.password_utils import hash_password, verify_password
 from mysql.connector import errorcode
-from fastapi import HTTPException, status
 
 def signup(db, academico: AcademicoCreate) -> AcademicoResponse:
     cursor = db.cursor(dictionary=True)
@@ -74,6 +72,26 @@ def signup(db, academico: AcademicoCreate) -> AcademicoResponse:
         cursor.close()
 
 
-def login(correo: str, contrasena: str):
-    """Autentica un académico y retorna un token JWT."""
-    pass
+def login(db, correo: str, contrasena: str):
+    cursor = db.cursor(dictionary=True)
+    try:
+        cursor.execute("SELECT * FROM ACADEMICO WHERE correo = %s", (correo,))
+        academico = cursor.fetchone()
+        
+        if not academico or not verify_password(contrasena, academico['contrasena']):
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED, 
+                detail="Correo o contraseña incorrectos."
+            )
+
+        token_data = {"sub": str(academico['id_academico'])}
+        access_token = create_access_token(token_data)
+
+        return {"access_token": access_token, "token_type": "bearer"}
+    except mysql.connector.Error:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Ocurrió un error interno en el servidor de base de datos."
+        )
+    finally:
+        cursor.close()
