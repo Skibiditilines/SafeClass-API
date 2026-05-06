@@ -29,5 +29,13 @@ jobs:
         pip install -r requirements.txt
 
     - name: Run Pytest
+      env:
+        DB_HOST: "localhost"
+        DB_PORT: "3306"
+        DB_USER: "test"
+        DB_PASSWORD: "test"
+        DB_NAME: "test"
+        SECRET_KEY: "testsecret"
+        ALGORITHM: "HS256"
       run: |
         pytest tests/ -v
