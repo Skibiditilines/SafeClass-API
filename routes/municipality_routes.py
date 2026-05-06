@@ -31,8 +31,29 @@ def get_all_municipalities(db=Depends(get_db_connection)):
     return municipality_controller.get_all_municipalities(db)
 
 
-@router.get("/{id}")
-def get_municipality(id: int):
+@router.get(
+    "/{id}",
+    response_model=MunicipioResponse,
+    status_code=status.HTTP_200_OK,
+    responses={
+        404: {
+            "description": "Municipio no encontrado",
+            "content": {
+                "application/json": {
+                    "example": {"detail": "Municipio con id 1 no encontrado."}
+                }
+            }
+        },
+        500: {
+            "description": "Error interno del servidor",
+            "content": {
+                "application/json": {
+                    "example": {"detail": "Ocurrió un error interno en el servidor de base de datos."}
+                }
+            }
+        }
+    }
+)
+def get_municipality(id: int, db=Depends(get_db_connection)):
     """Obtener un municipio específico por ID."""
-    # TODO: Llamar a municipality_controller.get_municipality_by_id(id)
-    return {"message": f"get municipality {id} - not implemented yet"}
+    return municipality_controller.get_municipality_by_id(db, id)
