@@ -2,14 +2,28 @@
 Controlador de municipios.
 Maneja la obtención de municipios registrados.
 """
-# TODO: Implementar lógica de municipios
+from fastapi import HTTPException, status
+import mysql.connector
+from models.municipality import MunicipioResponse
 
 
-def get_all_municipalities():
+def get_all_municipalities(db) -> list[MunicipioResponse]:
     """Retorna todos los municipios registrados."""
-    pass
+    cursor = db.cursor(dictionary=True)
+    try:
+        # Seleccionar todos los municipios con sus coordenadas
+        cursor.execute("SELECT id_municipio, nombre, lat, lon FROM MUNICIPIO")
+        rows = cursor.fetchall()
+        return [MunicipioResponse(**row) for row in rows]
+    except mysql.connector.Error:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Ocurrió un error interno en el servidor de base de datos."
+        )
+    finally:
+        cursor.close()
 
 
-def get_municipality_by_id(municipio_id: int):
+def get_municipality_by_id(db, municipio_id: int) -> MunicipioResponse:
     """Retorna un municipio específico por su ID."""
     pass
