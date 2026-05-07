@@ -7,14 +7,40 @@ from fastapi import HTTPException, status
 
 # TODO: Implementar lógica de suspensiones para GET
 
-def get_all_suspensions(academico_id: int):
+def get_all_suspensions(db, academico_id: int):
     """Retorna todas las suspensiones del académico."""
-    pass
+    cursor = db.cursor(dictionary=True)
+    try:
+        cursor.execute("SELECT * FROM SUSPENSION WHERE id_academico = %s ORDER BY fecha DESC", (academico_id,))
+        return cursor.fetchall()
+    except mysql.connector.Error:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Ocurrió un error al consultar las suspensiones."
+        )
+    finally:
+        cursor.close()
 
 
-def get_suspension_by_date(academico_id: int, fecha: str):
+def get_suspension_by_date(db, academico_id: int, fecha):
     """Retorna la suspensión de una fecha específica (YYYY-MM-DD)."""
-    pass
+    cursor = db.cursor(dictionary=True)
+    try:
+        cursor.execute("SELECT * FROM SUSPENSION WHERE id_academico = %s AND fecha = %s", (academico_id, fecha))
+        suspension = cursor.fetchone()
+        if not suspension:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"No se encontró una suspensión para la fecha {fecha}."
+            )
+        return suspension
+    except mysql.connector.Error:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Ocurrió un error al consultar la suspensión."
+        )
+    finally:
+        cursor.close()
 
 
 def create_suspension(db, academico_id: int, fecha):

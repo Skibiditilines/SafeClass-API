@@ -5,6 +5,8 @@ GET  /suspensions           - Obtener todas las suspensiones del usuario
 GET  /suspensions/{fecha}   - Obtener la suspensión de una fecha específica
 """
 from fastapi import APIRouter, Depends, status
+from typing import List
+from datetime import date
 from config.db_connection import get_db_connection
 from middlewares.jwt_middleware import jwt_required
 from models.suspension import SuspensionBase, SuspensionResponse
@@ -23,16 +25,20 @@ def create_suspension(
     return suspension_controller.create_suspension(db, id_academico, suspension.fecha)
 
 
-@router.get("/")
-def get_all_suspensions():
+@router.get("/", response_model=List[SuspensionResponse])
+def get_all_suspensions(
+    db = Depends(get_db_connection), 
+    id_academico: int = Depends(jwt_required)
+):
     """Obtener todas las suspensiones del usuario autenticado."""
-    # TODO: Obtener id del académico del token JWT
-    # TODO: Llamar a suspension_controller.get_all_suspensions(...)
-    return {"message": "get all suspensions - not implemented yet"}
+    return suspension_controller.get_all_suspensions(db, id_academico)
 
 
-@router.get("/{fecha}")
-def get_suspension_by_date(fecha: str):
+@router.get("/{fecha}", response_model=SuspensionResponse)
+def get_suspension_by_date(
+    fecha: date, 
+    db = Depends(get_db_connection), 
+    id_academico: int = Depends(jwt_required)
+):
     """Obtener la suspensión de una fecha específica (YYYY-MM-DD)."""
-    # TODO: Llamar a suspension_controller.get_suspension_by_date(...)
-    return {"message": f"get suspension for {fecha} - not implemented yet"}
+    return suspension_controller.get_suspension_by_date(db, id_academico, fecha)
