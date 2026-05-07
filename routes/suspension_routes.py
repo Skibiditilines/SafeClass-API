@@ -4,17 +4,23 @@ POST /suspensions           - Registrar una suspensión
 GET  /suspensions           - Obtener todas las suspensiones del usuario
 GET  /suspensions/{fecha}   - Obtener la suspensión de una fecha específica
 """
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends, status
+from config.db_connection import get_db_connection
+from middlewares.jwt_middleware import jwt_required
+from models.suspension import SuspensionBase, SuspensionResponse
+from controllers import suspension_controller
 
 router = APIRouter()
 
 
-@router.post("/")
-def create_suspension():
+@router.post("/", response_model=SuspensionResponse, status_code=status.HTTP_201_CREATED)
+def create_suspension(
+    suspension: SuspensionBase, 
+    db = Depends(get_db_connection), 
+    id_academico: int = Depends(jwt_required)
+):
     """Registrar una suspensión en una fecha determinada."""
-    # TODO: Recibir body con fecha
-    # TODO: Llamar a suspension_controller.create_suspension(...)
-    return {"message": "create suspension - not implemented yet"}
+    return suspension_controller.create_suspension(db, id_academico, suspension.fecha)
 
 
 @router.get("/")
