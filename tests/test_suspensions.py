@@ -32,16 +32,22 @@ def test_fun_09_create_suspension(auth_client, mock_db):
     assert response.json()["fecha"] == "2026-05-05"
 
 
-def test_fun_10_get_all_suspensions(client):
+def test_fun_10_get_all_suspensions(auth_client, mock_db):
     """fun_10: Listar todas las suspensiones del usuario retorna 200."""
-    response = client.get("/suspensions/")
+    mock_cursor = mock_db.cursor.return_value
+    mock_cursor.fetchall.return_value = [{"id_suspension": 1, "id_academico": 1, "fecha": "2026-05-05"}]
+    
+    response = auth_client.get("/suspensions/")
     assert response.status_code == 200
     assert "message" in response.json() or isinstance(response.json(), list)
 
 
-def test_fun_10_get_suspension_by_date(client):
+def test_fun_10_get_suspension_by_date(auth_client, mock_db):
     """fun_10: Obtener suspensión por fecha específica retorna 200 o null."""
+    mock_cursor = mock_db.cursor.return_value
+    mock_cursor.fetchone.return_value = {"id_suspension": 1, "id_academico": 1, "fecha": "2026-05-05"}
+    
     fecha = "2026-05-05"
-    response = client.get(f"/suspensions/{fecha}")
+    response = auth_client.get(f"/suspensions/{fecha}")
     assert response.status_code == 200
     assert "message" in response.json() or "fecha" in response.json() or response.json() is None

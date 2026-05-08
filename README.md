@@ -211,6 +211,22 @@ git push origin feature/fun_01
 # (solo el Techlead hace merge a main)
 ```
 
+## Ejecución de pruebas
+
+```bash
+# Para ejecutar todas las pruebas
+pytest
+
+# Para ejecutar pruebas de un módulo específico
+pytest tests/test_module.py
+
+# Para ejecutar pruebas con cobertura
+pytest --cov=your_package
+
+# Para ejecutar pruebas con reporte HTML
+pytest --cov=your_package --cov-report html
+```
+
 ---
 
 ## Plan de trabajo
