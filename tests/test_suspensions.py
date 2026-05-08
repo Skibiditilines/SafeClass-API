@@ -9,14 +9,13 @@ from main import app
 from middlewares.jwt_middleware import jwt_required
 
 def override_jwt_required():
-    return {"sub": "1"}  # Simula el id_academico = 1
+    return 1  # Simula el id_academico = 1
 
 @pytest.fixture
 def auth_client(client):
     app.dependency_overrides[jwt_required] = override_jwt_required
     yield client
     app.dependency_overrides.pop(jwt_required, None)
-
 
 def test_fun_09_create_suspension(auth_client, mock_db):
     """fun_09: Registrar una suspensión retorna 201 y los datos insertados."""
