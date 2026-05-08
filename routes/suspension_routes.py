@@ -1,32 +1,85 @@
 """
 Rutas de suspensiones.
 POST /suspensions           - Registrar una suspensión
-GET  /suspensions           - Obtener todas las suspensiones del usuario
-GET  /suspensions/{fecha}   - Obtener la suspensión de una fecha específica
+GET  /suspensions           - Obtener todas las suspensiones del usuario autenticado
+GET  /suspensions/{fecha}   - Obtener la suspensión de una fecha específica (YYYY-MM-DD)
 """
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends, status
+from config.db_connection import get_db_connection
+from middlewares.jwt_middleware import jwt_required
+from models.suspension import SuspensionBase, SuspensionResponse
+from controllers import suspension_controller
 
 router = APIRouter()
 
 
-@router.post("/")
-def create_suspension():
+@router.post("/", response_model=SuspensionResponse, status_code=status.HTTP_201_CREATED)
+def create_suspension(
+    suspension: SuspensionBase,
+    db=Depends(get_db_connection),
+    payload: dict = Depends(jwt_required)
+):
     """Registrar una suspensión en una fecha determinada."""
-    # TODO: Recibir body con fecha
-    # TODO: Llamar a suspension_controller.create_suspension(...)
-    return {"message": "create suspension - not implemented yet"}
+    # El JWT almacena el id bajo la clave "sub" como string; se convierte a int
+    id_academico = int(payload.get("sub"))
+    return suspension_controller.create_suspension(db, id_academico, suspension.fecha)
 
-
-@router.get("/")
-def get_all_suspensions():
+# Fun_10: Ethan Sarricolea
+@router.get(
+    "/",
+    response_model=list[SuspensionResponse],
+    status_code=status.HTTP_200_OK,
+    responses={
+        500: {
+            "description": "Error interno del servidor",
+            "content": {
+                "application/json": {
+                    "example": {"detail": "Ocurrió un error interno en el servidor de base de datos."}
+                }
+            }
+        }
+    }
+)
+def get_all_suspensions(
+    db=Depends(get_db_connection),
+    payload: dict = Depends(jwt_required)
+):
     """Obtener todas las suspensiones del usuario autenticado."""
-    # TODO: Obtener id del académico del token JWT
-    # TODO: Llamar a suspension_controller.get_all_suspensions(...)
-    return {"message": "get all suspensions - not implemented yet"}
+    # El JWT almacena el id bajo la clave "sub" como string; se convierte a int
+    id_academico = int(payload.get("sub"))
+    return suspension_controller.get_all_suspensions(db, id_academico)
 
 
-@router.get("/{fecha}")
-def get_suspension_by_date(fecha: str):
+@router.get(
+    "/{fecha}",
+    response_model=SuspensionResponse,
+    status_code=status.HTTP_200_OK,
+    responses={
+        404: {
+            "description": "Suspensión no encontrada",
+            "content": {
+                "application/json": {
+                    "example": {"detail": "No se encontró una suspensión para la fecha 2026-05-07."}
+                }
+            }
+        },
+        500: {
+            "description": "Error interno del servidor",
+            "content": {
+                "application/json": {
+                    "example": {"detail": "Ocurrió un error interno en el servidor de base de datos."}
+                }
+            }
+        }
+    }
+)
+def get_suspension_by_date(
+    fecha: str,
+    db=Depends(get_db_connection),
+    payload: dict = Depends(jwt_required)
+):
     """Obtener la suspensión de una fecha específica (YYYY-MM-DD)."""
-    # TODO: Llamar a suspension_controller.get_suspension_by_date(...)
-    return {"message": f"get suspension for {fecha} - not implemented yet"}
+    # El JWT almacena el id bajo la clave "sub" como string; se convierte a int
+    id_academico = int(payload.get("sub"))
+    return suspension_controller.get_suspension_by_date(db, id_academico, fecha)
+

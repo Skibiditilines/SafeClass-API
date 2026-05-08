@@ -211,6 +211,22 @@ git push origin feature/fun_01
 # (solo el Techlead hace merge a main)
 ```
 
+## Ejecución de pruebas
+
+```bash
+# Para ejecutar todas las pruebas
+pytest
+
+# Para ejecutar pruebas de un módulo específico
+pytest tests/test_module.py
+
+# Para ejecutar pruebas con cobertura
+pytest --cov=your_package
+
+# Para ejecutar pruebas con reporte HTML
+pytest --cov=your_package --cov-report html
+```
+
 ---
 
 ## Plan de trabajo
@@ -227,12 +243,12 @@ Listado de funcionalidades a implementar. Cada `fun_##` corresponde a una rama `
 | fun_06 | `routes/municipality_routes.py` · `controllers/municipality_controller.py`                            | Endpoint **GET /municipios/{id}** — Obtener municipio por ID                  | Ethan Yahel  | 05/05/2026 |
 | fun_07 | `routes/auth_routes.py` · `services/openweathermap_service.py` · `config/settings.py`                 | Endpoint **GET /weather** — Clima actual del municipio del usuario            |              |            |
 | fun_08 | `services/openweathermap_service.py` · `utils/weather_utils.py`                                       | Endpoint **GET /weather/{fecha}** — Pronóstico por fecha (máx. 5 días)        |              |            |
-| fun_09 | `routes/suspension_routes.py` · `controllers/suspension_controller.py` · `models/suspension.py`       | Endpoint **POST /suspensions** — Registrar suspensión                         |              |            |
-| fun_10 | `routes/suspension_routes.py` · `controllers/suspension_controller.py`                                | Endpoints **GET /suspensions** y **GET /suspensions/{fecha}**                 |              |            |
+| fun_09 | `routes/suspension_routes.py` · `controllers/suspension_controller.py` · `models/suspension.py`       | Endpoint **POST /suspensions** — Registrar suspensión                         | Elias Martinez | 07/05/2026 |
+| fun_10 | `routes/suspension_routes.py` · `controllers/suspension_controller.py`                                | Endpoints **GET /suspensions** y **GET /suspensions/{fecha}**                 | Ethan Sarricolea | 07/05/2026 |
 | fun_11 | `utils/weather_utils.py`                                                                              | Lógica de recomendación automática de suspensión según condiciones climáticas |              |            |
 | fun_12 | `middlewares/rate_limit_middleware.py`                                                                | Middleware de limitación de tasa (rate limiting)                              |              |            |
 | fun_13 | `config/db_connection.py` · `config/settings.py`                                                      | Configuración de conexión a MySQL con variables de entorno                    |              |            |
-| fun_14 | `tests/test_auth.py`                                                                                  | Pruebas unitarias de autenticación (fun_01 – fun_04)                          |              |            |
-| fun_15 | `tests/test_municipalities.py`                                                                        | Pruebas unitarias de municipios (fun_05 – fun_06)                             |              |            |
-| fun_16 | `tests/test_weather.py`                                                                               | Pruebas unitarias del servicio de clima (fun_07 – fun_08)                     |              |            |
-| fun_17 | `tests/test_suspensions.py`                                                                           | Pruebas unitarias de suspensiones (fun_09 – fun_10)                           |              |            |
+| fun_14 | `tests/test_auth.py`                                                                                  | Pruebas unitarias de autenticación (fun_01 – fun_04)                          |Elias Martinez             |       06/05/2026     |
+| fun_15 | `tests/test_municipalities.py`                                                                        | Pruebas unitarias de municipios (fun_05 – fun_06)                             |Elias    Martinez |            06/05/2026|
+| fun_16 | `tests/test_weather.py`                                                                               | Pruebas unitarias del servicio de clima (fun_07 – fun_08)                     |   Elias Martinez            |            06/05/2026|
+| fun_17 | `tests/test_suspensions.py`                                                                           | Pruebas unitarias de suspensiones (fun_09 – fun_10)                           |   Elias Martinez           |            06/05/2026|
