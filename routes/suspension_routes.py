@@ -16,10 +16,12 @@ router = APIRouter()
 @router.post("/", response_model=SuspensionResponse, status_code=status.HTTP_201_CREATED)
 def create_suspension(
     suspension: SuspensionBase,
-    db = Depends(get_db_connection), 
-    id_academico: int = Depends(jwt_required)
+    db=Depends(get_db_connection),
+    payload: dict = Depends(jwt_required)
 ):
     """Registrar una suspensión en una fecha determinada."""
+    # El JWT almacena el id bajo la clave "sub" como string; se convierte a int
+    id_academico = int(payload.get("sub"))
     return suspension_controller.create_suspension(db, id_academico, suspension.fecha)
 
 # Fun_10: Ethan Sarricolea
@@ -39,11 +41,12 @@ def create_suspension(
     }
 )
 def get_all_suspensions(
-    db = Depends(get_db_connection),
-    id_academico: int = Depends(jwt_required)
+    db=Depends(get_db_connection),
+    payload: dict = Depends(jwt_required)
 ):
     """Obtener todas las suspensiones del usuario autenticado."""
-    # Delegar la consulta al controlador, pasando la conexión y el ID del token
+    # El JWT almacena el id bajo la clave "sub" como string; se convierte a int
+    id_academico = int(payload.get("sub"))
     return suspension_controller.get_all_suspensions(db, id_academico)
 
 
@@ -73,9 +76,10 @@ def get_all_suspensions(
 def get_suspension_by_date(
     fecha: str,
     db=Depends(get_db_connection),
-    id_academico: int = Depends(jwt_required)
+    payload: dict = Depends(jwt_required)
 ):
     """Obtener la suspensión de una fecha específica (YYYY-MM-DD)."""
-    # Pasar la fecha como string; el controlador filtra por académico y fecha
+    # El JWT almacena el id bajo la clave "sub" como string; se convierte a int
+    id_academico = int(payload.get("sub"))
     return suspension_controller.get_suspension_by_date(db, id_academico, fecha)
 
