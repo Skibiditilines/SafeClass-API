@@ -5,19 +5,31 @@ fun_10 — GET  /suspensions           (listar suspensiones del usuario)
 fun_10 — GET  /suspensions/{fecha}   (suspensión por fecha)
 """
 import pytest
+from main import app
+from middlewares.jwt_middleware import jwt_required
 
-# Nota: Endpoints actualmente sin implementar.
-# Estas pruebas proporcionan la estructura base.
+def override_jwt_required():
+    return 1  # Simula el id_academico = 1
 
-def test_fun_09_create_suspension(client):
-    """fun_09: Registrar una suspensión del día actual retorna 201."""
+@pytest.fixture
+def auth_client(client):
+    app.dependency_overrides[jwt_required] = override_jwt_required
+    yield client
+    app.dependency_overrides.pop(jwt_required, None)
+
+def test_fun_09_create_suspension(auth_client, mock_db):
+    """fun_09: Registrar una suspensión retorna 201 y los datos insertados."""
+    mock_cursor = mock_db.cursor.return_value
+    mock_cursor.fetchone.return_value = None  # No existe suspensión previa
+    mock_cursor.lastrowid = 1
+    
     payload = {"fecha": "2026-05-05"}
-    # TODO: Generar un token válido e inyectarlo en los headers cuando se implemente la seguridad
-    # headers = {"Authorization": "Bearer <token>"}
-    response = client.post("/suspensions/", json=payload)
-    # Puede retornar 200 (dummy) o 201 (implementado)
-    assert response.status_code in (200, 201)
-    assert "message" in response.json() or "id_suspension" in response.json()
+    response = auth_client.post("/suspensions/", json=payload)
+    
+    assert response.status_code == 201
+    assert response.json()["id_suspension"] == 1
+    assert response.json()["id_academico"] == 1
+    assert response.json()["fecha"] == "2026-05-05"
 
 
 def test_fun_10_get_all_suspensions(client):
