@@ -21,3 +21,4 @@ ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 60))
 
 # OpenWeatherMap
 OWM_API_KEY = os.getenv("OWM_API_KEY")
+OWM_BASE_URL = os.getenv("OWM_BASE_URL")
