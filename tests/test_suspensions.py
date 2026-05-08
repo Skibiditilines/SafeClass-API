@@ -9,7 +9,7 @@ from main import app
 from middlewares.jwt_middleware import jwt_required
 
 def override_jwt_required():
-    return 1  # Simula el id_academico = 1
+    return {"sub": "1"}  # Simula el payload JWT real (sub = id_academico como string)
 
 @pytest.fixture
 def auth_client(client):
