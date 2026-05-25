@@ -76,4 +76,4 @@ def get_forecast_by_date(municipio: dict, fecha: str) -> dict:
         "pronostico": pronosticos_formateados,
     }
 
-
+

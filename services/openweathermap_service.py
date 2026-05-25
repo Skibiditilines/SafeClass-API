@@ -31,8 +31,9 @@ def get_current_weather(lat: float, lon: float) -> dict:
 
 def get_forecast(lat: float, lon: float, fecha: str) -> dict:
     """
-    Obtiene el pronóstico para una fecha específica (máx. 5 días).
-    Endpoint OWM: /forecast
+    Obtiene el pronóstico para una fecha específica (máx. 5 días desde hoy).
+    Endpoint OWM: /forecast  — devuelve bloques de 3 h para los próximos 5 días.
+    Se filtran únicamente los registros cuyo dt_txt comience con la fecha solicitada.
     """
     url = f"{OWM_BASE_URL}/forecast"
 
