@@ -3,6 +3,7 @@ from routes.auth_routes import router as auth_router
 from routes.municipality_routes import router as municipality_router
 from routes.suspension_routes import router as suspension_router
 from routes.weather_routes import router as weather_router
+from middlewares.rate_limit_middleware import rate_limit_middleware
 
 app = FastAPI(
     title="SafeClass API",
@@ -10,7 +11,11 @@ app = FastAPI(
     version="1.0.0",
 )
 
+# Registrar middlewares
+app.middleware("http")(rate_limit_middleware)
+
 # Registrar routers
+
 app.include_router(auth_router, prefix="/auth", tags=["Auth"])
 app.include_router(municipality_router, prefix="/municipios", tags=["Municipios"])
 app.include_router(suspension_router, prefix="/suspensions", tags=["Suspensions"])
