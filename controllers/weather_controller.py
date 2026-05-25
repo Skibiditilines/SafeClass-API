@@ -34,3 +34,4 @@ def get_current_weather(municipio: dict) -> dict:
         "viento_kmh": round(data.get("wind", {}).get("speed", 0) * 3.6, 2),
         "lluvia_mm": data.get("rain", {}).get("1h", 0),
     }
+
