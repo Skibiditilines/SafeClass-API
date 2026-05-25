@@ -1,17 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from config.db_connection import get_db_connection
+from middlewares.jwt_middleware import jwt_required
 import controllers.weather_controller as weather_ctrl
-import utils.token_utils as token_utils
 
 router = APIRouter()
 
-@router.get("/")
-def get_user_weather(
-    db=Depends(get_db_connection),
-    user_id: int = Depends(token_utils.verify_token)
-):
+
+def get_user_municipality(db, user_id: int):
     cursor = db.cursor(dictionary=True)
-    
     query = """
         SELECT m.id_municipio, m.nombre, m.lat AS latitud, m.lon AS longitud 
         FROM ACADEMICO u
@@ -21,6 +17,17 @@ def get_user_weather(
     cursor.execute(query, (user_id,))
     municipio = cursor.fetchone()
     cursor.close()
+    return municipio
+
+
+@router.get("/")
+def get_user_weather(
+    db=Depends(get_db_connection),
+    payload: dict = Depends(jwt_required)
+):
+    """Obtiene el clima actual del municipio del usuario autenticado."""
+    user_id = int(payload.get("sub"))
+    municipio = get_user_municipality(db, user_id)
 
     if not municipio:
         raise HTTPException(

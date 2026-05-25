@@ -35,3 +35,5 @@ def get_forecast(lat: float, lon: float, fecha: str) -> dict:
     Endpoint OWM: /forecast
     """
     pass
+
+
