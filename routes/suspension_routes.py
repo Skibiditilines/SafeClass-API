@@ -49,6 +49,15 @@ def get_all_suspensions(
     id_academico = int(payload.get("sub"))
     return suspension_controller.get_all_suspensions(db, id_academico)
 
+@router.get("/recommendations", status_code=status.HTTP_200_OK)
+def get_suspension_recommendations(
+    db=Depends(get_db_connection),
+    payload: dict = Depends(jwt_required)
+):
+    """Obtener recomendaciones de suspensión para los próximos días según el clima."""
+    id_academico = int(payload.get("sub"))
+    return suspension_controller.get_suspension_recommendations(db, id_academico)
+
 
 @router.get(
     "/{fecha}",
