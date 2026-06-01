@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from routes.auth_routes import router as auth_router
 from routes.municipality_routes import router as municipality_router
 from routes.suspension_routes import router as suspension_router
@@ -9,6 +10,15 @@ app = FastAPI(
     title="SafeClass API",
     description="API que determina si se deben suspender actividades escolares basándose en el clima.",
     version="1.0.0",
+)
+
+# Configurar CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173", "http://localhost:3000", "http://127.0.0.1:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Registrar middlewares
